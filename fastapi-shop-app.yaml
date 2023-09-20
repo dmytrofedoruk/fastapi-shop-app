@@ -1,0 +1,41 @@
+namespace: fastapi-shop-app
+fastapi-shop-app:
+  defines: runnable
+  metadata:
+    name: fastapi-shop-app
+    description: A shopping application built using FastAPI.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    fastapi-shop-app:
+      build: .
+  services:
+    application-port:
+      container: fastapi-shop-app
+      port: 8000
+      host-port: 8000
+      publish: false
+      protocol: TCP
+      description: The port exposed for the application to receive incoming requests
+  connections:
+    postgresql:
+      target: fastapi-shop-app/db
+      service: postgres
+  variables:
+    postgres-password:
+      env: POSTGRES_PASSWORD
+      type: string
+      description: The password for the PostgreSQL database.
+      value: '!!!SETME!!!'
+    postgres-db:
+      env: POSTGRES_DB
+      type: string
+      description: The name of the PostgreSQL database.
+      value: bill
+db:
+  defines: runnable
+  inherits: postgresql/db
+stack:
+  defines: group
+  runnable-list:
+    - fastapi-shop-app/fastapi-shop-app
+    - fastapi-shop-app/db
